@@ -26,14 +26,14 @@ public class AuthService {
     @Resource
     private TokenUtil tokenUtil;
 
-    public ResponseEntity<TokenResponse> getToken(TokenRequest jwtRequest){
+    public ResponseEntity<TokenResponse> getToken(TokenRequest request){
         UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(jwtRequest.getUsername(),jwtRequest.getPassword());
+                new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword());
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         //UserDetails user = (UserDetails) authentication.getPrincipal();
-        UserDetails user = userDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
         String jwtToken = tokenUtil.generateToken(user.getUsername());
         TokenResponse jwtResponse = new TokenResponse();
         jwtResponse.setUsername(user.getUsername());

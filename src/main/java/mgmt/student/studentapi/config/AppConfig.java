@@ -19,12 +19,12 @@ public class AppConfig {
                 .password(passwordEncoder().encode("wasilwam@1"))
                 .roles("ADMIN")
                 .build();
-        UserDetails normal_user = User.builder()
-                .username("mark")
-                .password(passwordEncoder().encode("wasilwam@2"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(admin_user, normal_user);
+//        UserDetails normal_user = User.builder()
+//                .username("mark")
+//                .password(passwordEncoder().encode("wasilwam@2"))
+//                .roles("USER")
+//                .build();
+        return new InMemoryUserDetailsManager(admin_user);
     }
 
     @Bean
@@ -33,6 +33,6 @@ public class AppConfig {
     }
 
     public static final String[] AUTH_WHITELIST = {
-            "/auth/login"
+            "/auth/signin"
     };
 }
