@@ -1,15 +1,16 @@
 package mgmt.student.studentapi.student;
 
 import java.math.BigInteger;
+import java.util.List;
 
 public interface StudentService {
-     String getStudents();
+     List<Student> getStudents();
+     long getStudentsCount();
+     Student updateStudent(Student student);
 
-     String updateStudent();
+     void deleteStudent(BigInteger studentId);
 
-     String deleteStudent(BigInteger studentId);
-
-     String getStudent(BigInteger studentId);
+     Student getStudent(BigInteger studentId);
 
      String getStudentsFiltered();
 

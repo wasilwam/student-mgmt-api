@@ -4,22 +4,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
 
-/**
- * Utility class for handling jwt security tokens
- *
- * @author Sudhir Bara
- */
+
+@Slf4j
 @Component
 public class TokenUtil {
 
     private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
-
 
     private static final String secretKey = "YSkdkjd27828djdljdwoi04348082bsjbvxxsfdy2234";
 
@@ -49,7 +46,6 @@ public class TokenUtil {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
-
     }
 
     public String getUserNameFromToken(String token){

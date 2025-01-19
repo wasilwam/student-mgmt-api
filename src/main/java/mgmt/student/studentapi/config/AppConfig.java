@@ -33,6 +33,7 @@ public class AppConfig {
     }
 
     public static final String[] AUTH_WHITELIST = {
-            "/auth/signin"
+            "/auth/signin",
+            "/h2-console/**"
     };
 }

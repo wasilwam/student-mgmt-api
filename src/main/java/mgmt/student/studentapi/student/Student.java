@@ -1,5 +1,6 @@
 package mgmt.student.studentapi.student;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.math.BigInteger;
@@ -11,7 +12,8 @@ public class Student {
     BigInteger studentId;
     private String firstName;
     private String lastName;
-    private String DOB;
+    private String dob;
+    @JsonProperty("class")
     private String studentClass;
     private String score;
     private String photoPath;

@@ -1,5 +1,6 @@
 package mgmt.student.studentapi.student;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import mgmt.student.studentapi.entity.BaseEntity;
@@ -11,6 +12,7 @@ import java.math.BigInteger;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class StudentOR extends BaseEntity {
 
     @Id
@@ -25,7 +27,7 @@ public class StudentOR extends BaseEntity {
     private String lastName;
 
     @Column(name = "dob", nullable = false)
-    private String DOB;
+    private String dob;
 
     @Column(name = "student_class", nullable = false, length = 50)
     private String studentClass;
@@ -38,4 +40,14 @@ public class StudentOR extends BaseEntity {
 
     @Column(name = "status", nullable = false)
     private Integer status;
+
+    public StudentOR(String firstName, String lastName, String dob, String studentClass, String score, String photoPath, Integer status) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.dob = dob;
+        this.studentClass = studentClass;
+        this.score = score;
+        this.photoPath = photoPath;
+        this.status = status;
+    }
 }

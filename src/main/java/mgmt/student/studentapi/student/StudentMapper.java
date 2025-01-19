@@ -5,5 +5,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface StudentMapper {
     StudentOR toEntity(Student s);
-    Student toEntity(StudentOR s);
+    Student toApi(StudentOR s);
 }
