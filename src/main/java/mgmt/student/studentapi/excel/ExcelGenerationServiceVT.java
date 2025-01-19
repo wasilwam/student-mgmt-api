@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.FileOutputStream;
@@ -22,6 +23,9 @@ import java.util.concurrent.Executors;
 @Service
 public class ExcelGenerationServiceVT {
 
+    @Value("${file.excel-base-path}")
+    private String excelBasePath;
+
     @Resource
     private ExcelRepository excelRepository;
 
@@ -29,7 +33,7 @@ public class ExcelGenerationServiceVT {
 
     public String generateExcel(int recordCount) throws IOException {
         String excelFilename = UUID.randomUUID().toString().replace("-", "") + ".xlsx";
-        String filePath = "/home/mark/source/java/student-mgmt/student-api/src/main/resources/exports/" + excelFilename;
+        String filePath = excelBasePath + excelFilename;
         ExcelOR excelOR = new ExcelOR();
         excelOR.setFilePath(filePath);
         excelOR.setFileName(excelFilename);
@@ -76,7 +80,7 @@ public class ExcelGenerationServiceVT {
             }
 
             // Write to file after processing all batches
-            Path exportPath = Path.of("/home/mark/source/java/student-mgmt/student-api/src/main/resources/exports");
+            Path exportPath = Path.of(excelBasePath);
             if (!Files.exists(exportPath)) {
                 Files.createDirectories(exportPath);
             }

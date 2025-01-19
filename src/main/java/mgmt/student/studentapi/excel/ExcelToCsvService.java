@@ -4,6 +4,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -20,9 +21,10 @@ import java.util.concurrent.*;
 @Service
 public class ExcelToCsvService {
 
-    // TODO: pull from configuration
-    private static final String EXCEL_FILE_BASE_PATH = "/home/mark/source/java/student-mgmt/student-api/src/main/resources/exports/";
-    private static final String CSV_FILE_BASE_PATH = "/home/mark/source/java/student-mgmt/student-api/src/main/resources/exports/csv/";
+    @Value("${file.excel-base-path}")
+    private String EXCEL_FILE_BASE_PATH;
+    @Value("${file.csv-base-path}")
+    private String CSV_FILE_BASE_PATH;
 
     @Resource
     ExcelRepository excelRepository;

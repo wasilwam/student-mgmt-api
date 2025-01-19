@@ -30,11 +30,6 @@ public class StudentServiceImpl implements StudentService {
     @Value("${file.student-photo-base-path}")
     private String studentPhotoBasePath;
 
-    @PostConstruct
-    public void init() throws IOException {
-        Files.createDirectories(Path.of(studentPhotoBasePath));
-    }
-
     @Override
     public Student uploadPhoto(MultipartFile file, BigInteger studentId) {
         String filename = UUID.randomUUID().toString().replace("-", "");
@@ -42,6 +37,12 @@ public class StudentServiceImpl implements StudentService {
         String photoAbsPath = studentPhotoBasePath + filename + fileExt;
         log.info("Uploading file {} to {}", filename, photoAbsPath);
         try {
+
+            Path exportPath = Path.of(studentPhotoBasePath);
+            if (!Files.exists(exportPath)) {
+                Files.createDirectories(exportPath);
+            }
+
             file.transferTo(Path.of(photoAbsPath));
             log.info("file saved to {}", photoAbsPath);
             Optional<StudentOR> student = studentRespository.findById(Long.valueOf(studentId.toString()));

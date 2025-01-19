@@ -13,7 +13,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(originPatterns = {"http://localhost:4200"})
 @Slf4j
 @RestController
 public class StudentController {
