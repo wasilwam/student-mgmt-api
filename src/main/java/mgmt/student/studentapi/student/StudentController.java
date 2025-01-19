@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -57,11 +58,14 @@ public class StudentController {
         return Collections.emptyList();
     }
 
-    @PostMapping(path = "/students/upload-photo",
+    @PostMapping(path = "/students/{id}/upload-photo",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    private ResponseEntity<Object> uploadPhoto(@RequestBody File file) {
-        log.info("uploading photo");
+    private ResponseEntity<Object> uploadPhoto(
+            @PathVariable("id") BigInteger studentId,
+            @RequestParam("file") MultipartFile file) {
+        log.info("uploading photo...");
+        studentService.uploadPhoto(file, studentId);
         return ResponseEntity.ok().body(new Student());
     }
 }

@@ -1,5 +1,7 @@
 package mgmt.student.studentapi.student;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.math.BigInteger;
 import java.util.List;
 
@@ -14,5 +16,5 @@ public interface StudentService {
 
      String getStudentsFiltered();
 
-     String uploadPhoto();
+     Student uploadPhoto(MultipartFile file, BigInteger studentId);
 }

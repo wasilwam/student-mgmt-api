@@ -1,11 +1,20 @@
 package mgmt.student.studentapi.student;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -18,9 +27,38 @@ public class StudentServiceImpl implements StudentService {
     @Resource
     private StudentMapper studentMapper;
 
+    @Value("${file.student-photo-base-path}")
+    private String studentPhotoBasePath;
+
+    @PostConstruct
+    public void init() throws IOException {
+        Files.createDirectories(Path.of(studentPhotoBasePath));
+    }
+
     @Override
-    public String uploadPhoto() {
-        return "";
+    public Student uploadPhoto(MultipartFile file, BigInteger studentId) {
+        String filename = UUID.randomUUID().toString().replace("-", "");
+        String fileExt = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
+        String photoAbsPath = studentPhotoBasePath + filename + fileExt;
+        log.info("Uploading file {} to {}", filename, photoAbsPath);
+        try {
+            file.transferTo(Path.of(photoAbsPath));
+            log.info("file saved to {}", photoAbsPath);
+            Optional<StudentOR> student = studentRespository.findById(Long.valueOf(studentId.toString()));
+            if (student.isPresent()) {
+                var s = student.get();
+                s.setPhotoPath(photoAbsPath);
+                studentRespository.save(s);
+                log.info("updated student photo_url = {}", photoAbsPath);
+                return studentMapper.toApi(s);
+            } else {
+                log.info("student not found, removing file {}", photoAbsPath);
+                Files.deleteIfExists(Path.of(photoAbsPath));
+                throw new RuntimeException("Student not found");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -38,6 +76,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void deleteStudent(BigInteger studentId) {
         log.info("deleting user with id {}", studentId);
+        studentRespository.deleteById(studentId.longValue());
     }
 
     @Override
