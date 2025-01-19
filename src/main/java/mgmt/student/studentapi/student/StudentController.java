@@ -65,7 +65,6 @@ public class StudentController {
             @PathVariable("id") BigInteger studentId,
             @RequestParam("file") MultipartFile file) {
         log.info("uploading photo...");
-        studentService.uploadPhoto(file, studentId);
-        return ResponseEntity.ok().body(new Student());
+        return ResponseEntity.ok().body(studentService.uploadPhoto(file, studentId));
     }
 }
