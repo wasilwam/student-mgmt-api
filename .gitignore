@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+### generated file exports
+!**/src/main/**/exports/

@@ -22,7 +22,7 @@ public class InitializationComponent {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    @PostConstruct
+//    @PostConstruct
     private void init() {
 
         logger.info("Start");
