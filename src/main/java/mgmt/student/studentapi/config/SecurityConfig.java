@@ -45,9 +45,9 @@ public class SecurityConfig {
                     config.setAllowCredentials(true);
                     return config;
                 }))
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers(AppConfig.AUTH_WHITELIST).permitAll()
+                .authorizeHttpRequests(authorize -> authorize.requestMatchers(
+                        AppConfig.AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated()
-//                        .anyRequest().permitAll()
                 )
                 .exceptionHandling(ex->ex.authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

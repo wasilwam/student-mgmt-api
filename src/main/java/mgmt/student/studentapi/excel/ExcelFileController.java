@@ -2,6 +2,7 @@ package mgmt.student.studentapi.excel;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,9 @@ import java.util.Map;
 @RestController
 public class ExcelFileController {
 
+    @Value("${file.max-num-generate}")
+    private int maxNumGenerate;
+
     @Resource
     private ExcelGenerationServiceVT excelGenerationServiceVT;
     @Resource
@@ -22,8 +26,8 @@ public class ExcelFileController {
 
     @GetMapping("/file/generate-excel")
     public Map<String, String> generateExcel(@RequestParam int recordCount) {
-        if (recordCount > 10) {
-            recordCount = 10;
+        if (recordCount > maxNumGenerate) {
+            recordCount = maxNumGenerate;
         }
         try {
             log.info("Generating excel file");

@@ -34,6 +34,7 @@ public class AppConfig {
 
     public static final String[] AUTH_WHITELIST = {
             "/auth/signin",
-            "/h2-console/**"
+            "/h2-console/**",
+            "/students/file/**"
     };
 }

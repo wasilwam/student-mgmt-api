@@ -2,6 +2,8 @@ package mgmt.student.studentapi.student;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -66,4 +68,20 @@ public class StudentController {
         log.info("uploading photo...");
         return ResponseEntity.ok().body(studentService.uploadPhoto(file, studentId));
     }
+
+    @GetMapping(path = "/students/file/{filename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<org.springframework.core.io.Resource> downloadPhoto(@PathVariable("filename") String filename) {
+
+        log.info("Downloading photo with filename: {}", filename);
+
+        org.springframework.core.io.Resource resource = studentService.getPhoto(filename);
+        if (null == resource) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .body(resource);
+    }
+
 }

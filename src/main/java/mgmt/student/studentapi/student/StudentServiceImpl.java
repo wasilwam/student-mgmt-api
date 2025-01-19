@@ -1,9 +1,9 @@
 package mgmt.student.studentapi.student;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +30,8 @@ public class StudentServiceImpl implements StudentService {
 
     @Value("${file.student-photo-base-path}")
     private String studentPhotoBasePath;
+    @Value("${file.photo-path-url-prefix}")
+    private String photoUrlPrefix;
 
     @Override
     public Student uploadPhoto(MultipartFile file, BigInteger studentId) {
@@ -48,7 +51,8 @@ public class StudentServiceImpl implements StudentService {
             Optional<StudentOR> student = studentRespository.findById(Long.valueOf(studentId.toString()));
             if (student.isPresent()) {
                 var s = student.get();
-                s.setPhotoPath(photoAbsPath);
+                var photoUrl = photoUrlPrefix + "/students/file/" + filename + fileExt;
+                s.setPhotoPath(photoUrl);
                 studentRespository.save(s);
                 log.info("updated student photo_url = {}", photoAbsPath);
                 return studentMapper.toApi(s);
@@ -59,6 +63,22 @@ public class StudentServiceImpl implements StudentService {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public org.springframework.core.io.Resource getPhoto(String filename) {
+        try {
+            Path path = Paths.get(studentPhotoBasePath).toAbsolutePath().normalize();
+            Path filePath = path.resolve(filename);
+            org.springframework.core.io.Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return resource;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading file: " + filename, e);
         }
     }
 

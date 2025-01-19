@@ -76,7 +76,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         return;
                     }
                 }
-            } else {
+            }
+            else {
                 log.warn("Authorization header is missing or doesn't start with Bearer");
                 handleException(response, HttpServletResponse.SC_UNAUTHORIZED, "Authorization header is missing or invalid");
                 return;
