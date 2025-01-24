@@ -57,6 +57,8 @@ public class CsvUploadService {
                     avatar,
                     Integer.parseInt(fields[6])
             );
+            studentOR.setApprovalStep("Maker");
+            studentOR.setApprovalStatus("Pending");
             StudentOR saved = studentRespository.save(studentOR);
             log.info("saved student {}", saved.getStudentId());
         } catch (Exception e) {

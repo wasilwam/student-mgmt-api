@@ -17,5 +17,8 @@ public class Student {
     private String studentClass;
     private String score;
     private String photoPath;
+    private String approvalStep;
+    private String approvalStatus;
+    private String rejectionComment;
     private Integer status;
 }

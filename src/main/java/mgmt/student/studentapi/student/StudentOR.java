@@ -38,10 +38,20 @@ public class StudentOR extends BaseEntity {
     @Column(name = "photo_path")
     private String photoPath;
 
+    @Column(name = "approval_step") // Maker or Checker
+    private String approvalStep;
+
+    @Column(name = "approval_status")
+    private String approvalStatus;
+
+    @Column(name = "rejection_comment")
+    private String rejectionComment;
+
     @Column(name = "status", nullable = false)
     private Integer status;
 
-    public StudentOR(String firstName, String lastName, String dob, String studentClass, String score, String photoPath, Integer status) {
+    public StudentOR(String firstName, String lastName, String dob, String studentClass, String score, String photoPath,
+            Integer status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.dob = dob;

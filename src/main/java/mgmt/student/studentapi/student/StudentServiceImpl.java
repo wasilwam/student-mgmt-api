@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -113,10 +112,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Page<Student> getStudents(int page, int size) {
-        // List<Student> students = studentRespository.findAll().stream()
-        // .map(studentOR -> studentMapper.toApi(studentOR))
-        // .collect(Collectors.toList());
-
         // Ignore sorting for now
         // Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
         // ? Sort.by(sortBy).ascending()
@@ -131,6 +126,14 @@ public class StudentServiceImpl implements StudentService {
                 .collect(Collectors.toList());
 
         return new PageImpl<>(students, pageable, studentPage.getTotalElements());
+    }
+
+    @Override
+    public List<Student> getStudents() {
+        log.info("fetching all students");
+        return studentRespository.findAll().stream()
+                .map(studentMapper::toApi)
+                .collect(Collectors.toList());
     }
 
     @Override

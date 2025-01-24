@@ -27,6 +27,12 @@ public class StudentController {
         return studentService.getStudents(page, size);
     }
 
+    @GetMapping("/students/all")
+    private List<Student> getStudents() {
+        log.info("fetching paged students");
+        return studentService.getStudents();
+    }
+
     @GetMapping("/students/count")
     private Map<String, Long> getStudentsCount() {
         log.info("fetching students count");

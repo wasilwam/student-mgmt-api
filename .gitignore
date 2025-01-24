@@ -34,4 +34,4 @@ build/
 
 
 ### generated file exports
-/src/main/java/resources/exports/
+/src/main/java/resources/exports/*
