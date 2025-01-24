@@ -4,6 +4,11 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,7 +41,8 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student uploadPhoto(MultipartFile file, BigInteger studentId) {
         String filename = UUID.randomUUID().toString().replace("-", "");
-        String fileExt = Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileExt = Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf("."));
         String photoAbsPath = studentPhotoBasePath + filename + fileExt;
         log.info("Uploading file {} to {}", filename, photoAbsPath);
         try {
@@ -83,11 +89,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public String getStudentsFiltered() {
-        return "";
-    }
-
-    @Override
     public Student getStudent(BigInteger studentId) {
         return studentRespository.findById(studentId.longValue())
                 .map(studentOR -> studentMapper.toApi(studentOR))
@@ -111,10 +112,25 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getStudents() {
-        return studentRespository.findAll().stream()
-                .map(studentOR -> studentMapper.toApi(studentOR))
+    public Page<Student> getStudents(int page, int size) {
+        // List<Student> students = studentRespository.findAll().stream()
+        // .map(studentOR -> studentMapper.toApi(studentOR))
+        // .collect(Collectors.toList());
+
+        // Ignore sorting for now
+        // Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+        // ? Sort.by(sortBy).ascending()
+        // : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<StudentOR> studentPage = studentRespository.findAll(pageable);
+
+        List<Student> students = studentPage.getContent()
+                .stream()
+                .map(studentMapper::toApi)
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(students, pageable, studentPage.getTotalElements());
     }
 
     @Override

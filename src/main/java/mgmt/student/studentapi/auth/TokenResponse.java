@@ -10,5 +10,6 @@ import lombok.*;
 public class TokenResponse {
     private String bearerToken;
     private String username;
+    private String userRole;
     private String expiresIn;
 }

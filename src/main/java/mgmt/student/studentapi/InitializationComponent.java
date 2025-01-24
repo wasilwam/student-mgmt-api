@@ -22,7 +22,7 @@ public class InitializationComponent {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-//    @PostConstruct
+    // @PostConstruct
     private void init() {
 
         logger.info("Start");
@@ -38,8 +38,7 @@ public class InitializationComponent {
                     generateRandomClass(),
                     generateRandomScore(),
                     "https://i.pravatar.cc/301",
-                    status
-            );
+                    status);
             StudentOR saved = studentRespository.save(studentOR);
             logger.info("saved student {}", saved.getStudentId());
         }
@@ -67,7 +66,8 @@ public class InitializationComponent {
     }
 
     public String generateRandomClass() {
-        List<String> list = Arrays.asList("Class1", "Class2", "Class3", "Class4", "Class5");
+        List<String> list = Arrays.asList("Class1", "Class2", "Class3", "Class4",
+                "Class5");
         Random random = new Random();
         return list.get(random.nextInt(list.size() - 1));
     }

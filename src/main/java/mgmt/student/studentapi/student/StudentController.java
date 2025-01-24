@@ -2,14 +2,13 @@ package mgmt.student.studentapi.student;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.math.BigInteger;
 import java.util.Collections;
 import java.util.List;
@@ -23,9 +22,9 @@ public class StudentController {
     private StudentService studentService;
 
     @GetMapping("/students")
-    private List<Student> getStudents() {
-        log.info("fetching all students");
-        return studentService.getStudents();
+    private Page<Student> getStudents(@RequestParam("page") int page, @RequestParam("size") int size) {
+        log.info("fetching paged students");
+        return studentService.getStudents(page, size);
     }
 
     @GetMapping("/students/count")
@@ -59,9 +58,7 @@ public class StudentController {
         return Collections.emptyList();
     }
 
-    @PostMapping(path = "/students/{id}/upload-photo",
-            consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/students/{id}/upload-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     private ResponseEntity<Object> uploadPhoto(
             @PathVariable("id") BigInteger studentId,
             @RequestParam("file") MultipartFile file) {
@@ -70,7 +67,8 @@ public class StudentController {
     }
 
     @GetMapping(path = "/students/file/{filename}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public ResponseEntity<org.springframework.core.io.Resource> downloadPhoto(@PathVariable("filename") String filename) {
+    public ResponseEntity<org.springframework.core.io.Resource> downloadPhoto(
+            @PathVariable("filename") String filename) {
 
         log.info("Downloading photo with filename: {}", filename);
 
