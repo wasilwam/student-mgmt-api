@@ -15,7 +15,7 @@ public class AppConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         UserDetails admin_user = User.builder()
-                .username("wasilwam")
+                .username("admin")
                 .password(passwordEncoder().encode("wasilwam@1"))
                 .roles("ADMIN")
                 .build();
@@ -25,9 +25,9 @@ public class AppConfig {
                 .roles("STUDENT_MAKER")
                 .build();
         UserDetails student_checker = User.builder()
-                .username("student_cheker")
+                .username("student_checker")
                 .password(passwordEncoder().encode("checker@2"))
-                .roles("STUDENT_CHEKER")
+                .roles("STUDENT_CHECKER")
                 .build();
         return new InMemoryUserDetailsManager(admin_user, student_maker, student_checker);
     }

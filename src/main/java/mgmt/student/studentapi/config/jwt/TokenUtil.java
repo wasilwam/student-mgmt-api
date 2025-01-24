@@ -16,7 +16,7 @@ import java.util.Date;
 @Component
 public class TokenUtil {
 
-    private static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
+    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60 * 1000;
 
     private static final String secretKey = "YSkdkjd27828djdljdwoi04348082bsjbvxxsfdy2234";
 

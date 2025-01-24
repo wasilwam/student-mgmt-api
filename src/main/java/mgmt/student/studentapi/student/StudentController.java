@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,10 +40,20 @@ public class StudentController {
         return Map.of("count", studentService.getStudentsCount());
     }
 
+    @PreAuthorize("STUDENT_MAKER, ADMIN")
     @PutMapping("/students/{id}")
     private Student updateStudent(@RequestBody Student student, @PathVariable("id") BigInteger studentId) {
         log.info("updating student {}", student);
-        return studentService.updateStudent(student);
+        return studentService.updateStudent(studentId, student);
+    }
+
+    @PreAuthorize("STUDENT_CHECKER, ADMIN")
+    @PostMapping("/students/{id}/approval")
+    private Student approveStudents(
+            @PathVariable("id") BigInteger studentId,   
+            @RequestParam String action,
+            @RequestParam(required = false) String comment) {
+        return studentService.approvalChecker(studentId, action, comment);
     }
 
     @DeleteMapping("/students/{id}")
@@ -56,12 +67,6 @@ public class StudentController {
     private Student getStudent(@PathVariable("id") BigInteger studentId) {
         log.info("fetching student {}", studentId);
         return studentService.getStudent(studentId);
-    }
-
-    @GetMapping("/students/filtered")
-    private List<Student> getStudentsFiltered() {
-        log.info("fetching students filtered");
-        return Collections.emptyList();
     }
 
     @PostMapping(path = "/students/{id}/upload-photo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,5 +92,4 @@ public class StudentController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
                 .body(resource);
     }
-
 }

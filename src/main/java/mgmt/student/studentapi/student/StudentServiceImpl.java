@@ -26,6 +26,19 @@ import java.util.stream.Collectors;
 @Service
 public class StudentServiceImpl implements StudentService {
 
+    private static final String APPROVAL_STATUS_PENDING = "Pending";
+    private static final String APPROVAL_STATUS_APPROVED = "Approved";
+    private static final String APPROVAL_STATUS_REJECTED = "Rejected";
+
+    public static final String APPROVAL_ACTION_APPROVE = "Approve";
+
+    public static final String APPROVAL_ACTION_REJECT = "Reject";
+
+    public static final String APPROVAL_STEP_MAKER = "Maker";
+
+    public static final String APPROVAL_STEP_CHECKER = "Checker";
+    public static final String APPROVAL_STEP_COMPLETE = "Complete";
+
     @Resource
     private StudentRespository studentRespository;
 
@@ -34,6 +47,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Value("${file.student-photo-base-path}")
     private String studentPhotoBasePath;
+
     @Value("${file.photo-path-url-prefix}")
     private String photoUrlPrefix;
 
@@ -101,13 +115,55 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public Student updateStudent(Student student) {
-        log.info("updating student with DOB {}", student.getDob());
-        return studentRespository.findById(student.getStudentId().longValue())
-                .map(studentOR -> studentRespository
-                        .save(studentMapper.toEntity(student))) // student exists, update the entry
-                .map(studentOR -> studentMapper.toApi(studentOR)) // entry returned from saving. convert to DTO
+    public Student updateStudent(BigInteger studentId, Student student) {
+        // throw to avoid create/update hibernate scenario
+        boolean studentExists = studentRespository.existsById(studentId.longValue());
+        if (!studentExists) {
+            throw new RuntimeException("Student not found: Id " + student.getStudentId());
+        }
+
+        student.setStudentId(studentId);
+        log.info("MAKER updating student {}", student.getStudentId());
+        Student updatedStudent = studentRespository.findById(student.getStudentId().longValue())
+                .map(studentOR -> studentRespository.save(studentMapper.toEntity(student)))
+                .map(studentOR -> {
+                    studentOR.setApprovalStep(APPROVAL_STEP_CHECKER);
+                    studentOR.setApprovalStatus(APPROVAL_STATUS_PENDING);
+                    return studentRespository.save(studentOR);
+                })
+                .map(studentOR -> studentMapper.toApi(studentOR))
                 .orElseThrow(() -> new RuntimeException("Student not found: Id " + student.getStudentId()));
+        return updatedStudent;
+    }
+
+    @Override
+    public Student approvalChecker(BigInteger studentId, String action, String comment) {
+        // throw to avoid create/update hibernate scenario
+        boolean studentExists = studentRespository.existsById(studentId.longValue());
+        if (!studentExists) {
+            throw new RuntimeException("Student not found: Id " + studentId);
+        }
+
+        log.info("approving CHECKER for student {}", studentId);
+        Optional<StudentOR> byId = studentRespository.findById(studentId.longValue());
+        StudentOR studentOR = byId.get();
+        if (null == studentOR.getApprovalStatus() || !studentOR.getApprovalStep().equals(APPROVAL_STEP_CHECKER)) {
+            throw new RuntimeException("bad request: student is not in approval step " + APPROVAL_STEP_CHECKER);
+        }
+        if (action.equals(APPROVAL_ACTION_APPROVE)) {
+            studentOR.setApprovalStep(APPROVAL_STEP_COMPLETE);
+            studentOR.setApprovalStatus(APPROVAL_STATUS_APPROVED);
+        } else if (action.equals(APPROVAL_ACTION_REJECT)) {
+            studentOR.setApprovalStep(APPROVAL_STEP_MAKER);
+            studentOR.setApprovalStatus(APPROVAL_STATUS_REJECTED);
+            if (Objects.isNull(comment)) {
+                throw new RuntimeException("bad request: comment is required for rejection");
+            }
+            studentOR.setRejectionComment(comment);
+        } else {
+            throw new RuntimeException("bad request: unknown approval action " + action);
+        }
+        return studentMapper.toApi(studentRespository.save(studentOR));
     }
 
     @Override
