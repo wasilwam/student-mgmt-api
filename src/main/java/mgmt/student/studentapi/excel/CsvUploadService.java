@@ -25,7 +25,7 @@ public class CsvUploadService {
 
         // Read the file line by line
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream()));
-             ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
+                ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor()) {
 
             String headerLine = reader.readLine(); // Skip the header line
             log.info("CSV Header: {}", headerLine);
@@ -34,7 +34,7 @@ public class CsvUploadService {
             while ((line = reader.readLine()) != null) {
                 String currentLine = line;
                 // Submit each row for processing using a virtual thread
-//                executorService.submit(() -> processEntry(currentLine));
+                // executorService.submit(() -> processEntry(currentLine));
                 processEntry(currentLine);
             }
         }
@@ -55,10 +55,10 @@ public class CsvUploadService {
                     fields[4],
                     fields[5],
                     avatar,
-                    Integer.parseInt(fields[6])
-            );
+                    Integer.parseInt(fields[6]));
             studentOR.setApprovalStep("Maker");
             studentOR.setApprovalStatus("Pending");
+            studentOR.setRejectionComment("");
             StudentOR saved = studentRespository.save(studentOR);
             log.info("saved student {}", saved.getStudentId());
         } catch (Exception e) {
