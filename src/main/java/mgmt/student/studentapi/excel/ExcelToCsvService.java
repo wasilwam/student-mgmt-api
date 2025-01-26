@@ -3,6 +3,7 @@ package mgmt.student.studentapi.excel;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.util.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,7 @@ public class ExcelToCsvService {
             log.error("could not create CSV folders {}", e.getMessage());
         }
 
+//        IOUtils.setByteArrayMaxOverride(Integer.MAX_VALUE);
         try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
              FileInputStream fis = new FileInputStream(FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis);

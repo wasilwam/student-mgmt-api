@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 
 @Slf4j
 @Service
-public class ExcelGenerationServiceVT {
+public class ExcelGenerationServiceV1 {
 
     @Value("${file.excel-base-path}")
     private String excelBasePath;

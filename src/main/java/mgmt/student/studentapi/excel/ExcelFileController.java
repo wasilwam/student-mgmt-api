@@ -18,7 +18,9 @@ public class ExcelFileController {
     private int maxNumGenerate;
 
     @Resource
-    private ExcelGenerationServiceVT excelGenerationServiceVT;
+    private ExcelGenerationServiceV1 excelGenerationServiceV1;
+    @Resource
+    private ExcelGenerationServiceV2 excelGenerationServiceV2;
     @Resource
     private ExcelToCsvService excelToCsvService;
     @Resource
@@ -31,7 +33,8 @@ public class ExcelFileController {
         }
         try {
             log.info("Generating excel file");
-            String generateExcel = excelGenerationServiceVT.generateExcel(recordCount);
+//            String generateExcel = excelGenerationServiceVT.generateExcel(recordCount);
+            String generateExcel = excelGenerationServiceV2.generateExcel(recordCount);
             var filename = generateExcel.substring(generateExcel.lastIndexOf("/") + 1);
             return Map.of("filename", filename, "totalRecords", String.valueOf(recordCount));
         } catch (IOException e) {
