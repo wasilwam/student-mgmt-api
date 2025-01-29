@@ -2,6 +2,7 @@ package mgmt.student.studentapi.student;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import mgmt.student.studentapi.exception.StudentNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
@@ -119,7 +120,7 @@ public class StudentServiceImpl implements StudentService {
         // throw to avoid create/update hibernate scenario
         boolean studentExists = studentRespository.existsById(studentId.longValue());
         if (!studentExists) {
-            throw new RuntimeException("Student not found: Id " + student.getStudentId());
+            throw new StudentNotFoundException("Student not found: Id " + student.getStudentId());
         }
 
         student.setStudentId(studentId);
