@@ -24,6 +24,8 @@ public class ExcelFileController {
     @Resource
     private ExcelToCsvService excelToCsvService;
     @Resource
+    private ExcelToCsvStreamingService excelToCsvStreamingService;
+    @Resource
     private CsvUploadService csvUploadService;
 
     @GetMapping("/file/generate-excel")
@@ -44,7 +46,8 @@ public class ExcelFileController {
 
     @GetMapping("/file/convert")
     public ResponseEntity<Map<String,String>> convertExcelToCsv(@RequestParam(required = false) String fileName) {
-        return ResponseEntity.ok(excelToCsvService.convertExcelToCsvWithScoreAdjustment(fileName));
+//        return ResponseEntity.ok(excelToCsvService.convertExcelToCsvWithScoreAdjustment(fileName));
+        return ResponseEntity.ok(excelToCsvStreamingService.readAndParseExcel(fileName));
     }
 
     @PostMapping("/file/upload")

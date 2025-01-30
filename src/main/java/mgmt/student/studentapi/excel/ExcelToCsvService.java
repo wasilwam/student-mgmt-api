@@ -52,7 +52,6 @@ public class ExcelToCsvService {
             log.error("could not create CSV folders {}", e.getMessage());
         }
 
-//        IOUtils.setByteArrayMaxOverride(Integer.MAX_VALUE);
         try (ExecutorService executorService = Executors.newVirtualThreadPerTaskExecutor();
              FileInputStream fis = new FileInputStream(FILE_PATH);
              Workbook workbook = new XSSFWorkbook(fis);
