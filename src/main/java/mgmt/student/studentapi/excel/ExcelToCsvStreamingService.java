@@ -2,6 +2,7 @@ package mgmt.student.studentapi.excel;
 
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import mgmt.student.studentapi.student.StudentOR;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xssf.eventusermodel.XSSFReader;
 import org.apache.poi.xssf.model.SharedStringsTable;
@@ -164,7 +165,7 @@ class SheetHandler extends org.xml.sax.helpers.DefaultHandler {
                 sb.append(rowMap.get("lastName").toString()).append(",");
                 sb.append(rowMap.get("DOB").toString()).append(",");
                 sb.append(rowMap.get("class").toString()).append(",");
-                sb.append(rowMap.get("score").toString()).append(",");
+                sb.append(rowMap.get("score").toString().replace(".0", "")).append(",");
                 sb.append(rowMap.get("status").toString()).append(",");
                 sb.append(rowMap.get("photoPath").toString()).append("\n");
                 try {
